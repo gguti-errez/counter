@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Liquidación semanal de gastos</title>
+<link rel="icon" href="/assets/logo.png">
+<link rel="stylesheet" href="/style.css">
+</head><body>
+<div class="overlay" id="login"><form class="box" id="loginForm" autocomplete="on">
+  <img class="logo" alt="pbs" src="/assets/logo.png"><h1>Liquidación semanal de gastos</h1>
+  <div class="f"><label for="lu">Usuario</label><input type="text" id="lu" name="username" autocomplete="username" required></div>
+  <div class="f"><label for="lp">Contraseña</label><input type="password" id="lp" name="password" autocomplete="current-password" required></div>
+  <p id="lmsg" class="err-t" role="alert"></p>
+  <button class="btn primary" type="submit">Ingresar</button>
+</form></div>
+<div class="overlay" id="pwbox"><form class="box" id="pwForm">
+  <h1 id="pwTitle">Cambiar contraseña</h1><p class="hint" id="pwHint"></p>
+  <div class="f"><label for="pc">Contraseña actual</label><input type="password" id="pc" autocomplete="current-password" required></div>
+  <div class="f"><label for="pn">Contraseña nueva (mínimo 8 caracteres)</label><input type="password" id="pn" autocomplete="new-password" minlength="8" required></div>
+  <p id="pmsg" role="alert"></p>
+  <div class="row"><button class="btn primary" type="submit">Guardar</button><button class="btn" type="button" id="pwCancel">Cancelar</button></div>
+</form></div>
+<div class="overlay" id="admin"><div class="adminbox">
+  <div class="row" style="justify-content:space-between;align-items:center"><h1 style="margin:0">Administración</h1><button class="btn" id="admClose" type="button">Volver al formulario</button></div>
+  <div class="tabs" role="group" aria-label="Secciones">
+    <button class="btn" type="button" data-tab="users" aria-pressed="true">Cuentas</button>
+    <button class="btn" type="button" data-tab="cfg" aria-pressed="false">Configuración</button>
+    <button class="btn" type="button" data-tab="inv" aria-pressed="false">Facturas registradas</button>
+    <button class="btn" type="button" data-tab="aud" aria-pressed="false">Bitácora</button>
+  </div>
+  <p id="ovmsg" role="status"></p>
+  <section id="tab-users"></section><section id="tab-cfg" hidden></section><section id="tab-inv" hidden></section><section id="tab-aud" hidden></section>
+</div></div>
+<div id="app" hidden>
+<div class="topbar"><div class="who"><b id="whoName"></b><span id="whoSub"></span></div>
+  <button class="btn small" id="btnAdmin" type="button" hidden>Administración</button>
+  <button class="btn small" id="btnPw" type="button">Cambiar contraseña</button>
+  <button class="btn small" id="btnOut" type="button">Salir</button></div>
+<div class="wrap">
+  <header>
+    <img alt="pbs" src="/assets/logo.png">
+    <div>
+      <h1>Liquidación semanal de gastos</h1>
+      <p>Sube las facturas, revisa lo que Claude lee de cada una y descarga el PDF con el cuadro y una página por factura.</p>
+    </div>
+  </header>
+
+  <section aria-labelledby="h-datos">
+    <h2 id="h-datos">Datos del reporte</h2>
+    <div class="grid">
+      <div class="f w4"><label for="nombre">Nombre<span class="lock">de tu cuenta</span></label><input type="text" id="nombre" autocomplete="off" class="ro" readonly tabindex="-1"></div>
+      <div class="f w4"><label for="cargo">Cargo<span class="lock">de tu cuenta</span></label><input type="text" id="cargo" autocomplete="off" class="ro" readonly tabindex="-1"></div>
+      <div class="f w2 half"><label for="cc">Centro de costo N°</label><input type="text" id="cc" inputmode="numeric" autocomplete="off"></div>
+      <div class="f w2 half"><label for="fondo">Monto fondo fijo (L.)<span class="lock">de tu cuenta</span></label><input type="number" id="fondo" class="ro" readonly tabindex="-1"></div>
+      <div class="f w2 half"><label for="fechaRep">Fecha del reporte</label><input type="date" id="fechaRep"></div>
+      <div class="f w2 half"><label for="periodo">Período del (martes)</label><input type="date" id="periodo"></div>
+      <div class="f w2 half"><label for="periodoFin">al (martes)</label><input type="date" id="periodoFin" class="ro" readonly tabindex="-1"></div>
+      <div class="f w2 half"><label for="corr">Correlativo N°</label><input type="text" id="corr" autocomplete="off"></div>
+      <div class="f w2 half"><label for="boletas">N° boletas</label><input type="number" id="boletas" min="0" step="1"></div>
+      <div class="f w2 half"><label for="tarifa">Lempiras por km<span class="lock">fijo</span></label><input type="number" id="tarifa" class="ro" readonly tabindex="-1" value="5.4"></div>
+      <div class="f w2 half"><label for="kmrec">KM REC (calculado)</label><input type="text" id="kmrec" class="ro" readonly></div>
+      <div class="f w10"><label for="lugares">Lugares visitados</label><input type="text" id="lugares" autocomplete="off" placeholder="Todos los lugares juntos, separados por comas"></div>
+      <div class="f w12"><label for="especificar">Especificar gastos</label><input type="text" id="especificar" autocomplete="off"></div>
+      <div class="f w12"><label for="obs">Observaciones</label><textarea id="obs"></textarea></div>
+    </div>
+    <p class="hint" style="margin-top:10px">El período va de martes a martes: se calcula solo a partir de la fecha del reporte y puedes cambiar el martes de inicio. KM REC es el total de combustible dividido entre los lempiras por km. El correlativo usa la semana del mes, el mes y el año de la fecha del reporte; las boletas se cuentan por factura. Puedes corregir ambos a mano. Nombre, cargo, fondo fijo y lempiras por km los define un administrador y no se pueden cambiar aquí.</p>
+  </section>
+
+  <section aria-labelledby="h-fact">
+    <h2 id="h-fact">Facturas</h2>
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Agregar facturas">
+      <b>Agregar facturas</b>
+      <span class="hint">Fotos (JPG, PNG) o PDF. Arrastra los archivos aquí o toca para elegirlos. Cada factura sale en su propia página del PDF.</span>
+    </div>
+    <input type="file" id="file" accept="image/*,application/pdf" multiple hidden>
+    <div id="cards"></div>
+  </section>
+
+  <section aria-labelledby="h-cuadro">
+    <h2 id="h-cuadro">Cuadro de liquidación</h2>
+    <div class="scroll"><table class="cuadro" id="cuadro"></table></div>
+    <div class="sumbox" id="sumbox"></div>
+  </section>
+</div>
+
+</div>
+<div class="bar" id="bar" hidden>
+  <div class="bar-in">
+    <div class="stat"><small>Total gastos</small><b id="bTotal">L. 0.00</b></div>
+    <div class="stat"><small>Fondo fijo</small><b id="bFondo">L. 0.00</b></div>
+    <div class="stat"><small>Saldo (fondo - gastos)</small><b id="bSaldo">L. 0.00</b></div>
+    <button class="btn primary" id="pdfBtn" type="button">Descargar PDF</button>
+    <p id="status" role="status"></p>
+  </div>
+</div>
+
+<script src="/vendor/pdf.min.js"></script>
+<script src="/app.js"></script>
+</body></html>
