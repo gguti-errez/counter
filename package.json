@@ -1,0 +1,10 @@
+{
+  "name": "fondo-fijo-server",
+  "version": "1.0.0",
+  "description": "Liquidación semanal de gastos (fondo fijo) PBS Honduras, servicio web con cuentas, roles y control de facturas duplicadas",
+  "main": "server.js",
+  "private": true,
+  "engines": { "node": ">=22.13" },
+  "scripts": { "start": "node --disable-warning=ExperimentalWarning server.js", "test": "node --disable-warning=ExperimentalWarning test/smoke.js" },
+  "dependencies": { "express": "4.21.2", "jspdf": "2.5.1" }
+}

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: fondo-fijo-pbs
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+    disk:
+      name: datos
+      mountPath: /data
+      sizeGB: 1
